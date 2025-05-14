@@ -1,0 +1,5 @@
+.venv
+SoccerNet/
+__pycache__/
+.env
+.csv
