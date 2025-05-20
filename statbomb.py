@@ -39,6 +39,8 @@ away_team = teams[1]
 plt.ion()
 
 fig, ax = plt.subplots()
+# Dibujamos un rectángulo verde claro para el campo de fútbol
+ax.add_patch(plt.Rectangle((0, 0), 120, 80, color="lightgreen"))
 sc = ax.scatter([], [])
 ax.set_xlim(-10, 130)
 ax.set_ylim(-10, 90)
@@ -92,7 +94,6 @@ def update(row):
     
     x = row["location"][0] 
     y = row["location"][1] 
-    positions = np.array([[x, y]])
 
     if not np.isnan(x) and not np.isnan(y):
         if row["team"] == home_team:
