@@ -12,7 +12,7 @@ def get_competitions():
     Get all competitions
     """
     competitions: pd.DataFrame = sb.competitions()
-    competitions = competitions.to_json(orient="records")
+    competitions = competitions.to_dict(orient="records")
     return JSONResponse(content=competitions)
 
 @router.get("/{competition_id}/{season_id}/matches")
