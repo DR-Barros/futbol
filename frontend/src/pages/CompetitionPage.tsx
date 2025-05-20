@@ -38,19 +38,28 @@ const CompetitionsPage = () => {
                <th>Nombre</th>
                <th>Temporada</th>
                <th>País</th>
+               <th></th>
           </tr>
           </thead>
           <tbody>
                {competitions.map((c) => (
                <tr
-               key={`${c.competition_id}-${c.season_id}`}
-               style={{ cursor: "pointer" }}
-               onClick={() => navigate(`/matches/${c.competition_id}/${c.season_id}`)}
-               >
-               <td>{c.competition_id}</td>
-               <td>{c.competition_name}</td>
-               <td>{c.season_name}</td>
-               <td>{c.country_name}</td>
+                    key={`${c.competition_id}-${c.season_id}`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/matches/${c.competition_id}/${c.season_id}`)}
+                    >
+                    <td>{c.competition_id}</td>
+                    <td>{c.competition_name}</td>
+                    <td>{c.season_name}</td>
+                    <td>{c.country_name}</td>
+                    <td>
+                         <button
+                         onClick={() => navigate(`/matches/${c.competition_id}/${c.season_id}`)}
+                         style={{ padding: "0.5rem 1rem", backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
+                         >
+                         Ver partidos
+                         </button>
+                    </td>
                </tr>
                ))}
           </tbody>
