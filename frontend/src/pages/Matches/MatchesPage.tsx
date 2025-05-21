@@ -49,6 +49,9 @@ const MatchesPage = () => {
   }
   , [competitionId, seasonId]);
 
+  if (loading) return <p>Cargando partidos...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (!matches || matches.length === 0) return <p>No hay partidos disponibles</p>;
   return (
     <div>
       <button
@@ -60,9 +63,7 @@ const MatchesPage = () => {
       >
         Volver
       </button>
-      {loading && <p>Loading matches...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && !error && (
+      <h2>Partidos de la competición: {matches[0].competition} - {matches[0].season}</h2>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -89,7 +90,7 @@ const MatchesPage = () => {
                   <TableCell>{match.referee}</TableCell>
                   <TableCell>
                     <button
-                      onClick={() => navigate(`/match/${match.match_id}`)}
+                      onClick={() => navigate(`/match/${match.match_id}/${competitionId}/${seasonId}`)}
                       style={{ padding: "0.5rem 1rem", backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
                     >
                       Ver detalles partido
@@ -100,7 +101,6 @@ const MatchesPage = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      )}
     </div>
   );
 };

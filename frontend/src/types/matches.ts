@@ -22,3 +22,16 @@ export interface Match {
   last_updated: string; 
   last_updated_360: string; 
 }
+
+export interface Lineup {
+    team: string;
+    tactics: {
+        formation: string;
+        lineup: {
+            player_id: number;
+            player_name: string;
+            position: string;
+            shirt_number: number;
+        }[];
+    }
+}

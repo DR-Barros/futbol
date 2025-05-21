@@ -1,0 +1,12 @@
+.formation-container {
+  margin: 1rem;
+  text-align: center;
+}
+
+.pitch {
+  width: 300px;
+  height: 450px;
+  background-color: #6ab150;
+  border: 2px solid white;
+  border-radius: 8px;
+}
