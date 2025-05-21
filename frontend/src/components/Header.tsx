@@ -15,19 +15,4 @@ const Header = () => {
   );
 };
 
-const styles = {
-  linkButton: {
-    display: "inline-block",
-    padding: "0.5rem 1rem",
-    backgroundColor: "#007bff",
-    color: "white",
-    borderRadius: "4px",
-    textDecoration: "none",
-    fontWeight: "bold",
-    border: "none",
-    cursor: "pointer",
-    transition: "background-color 0.3s",
-  } as React.CSSProperties,
-};
-
 export default Header;
