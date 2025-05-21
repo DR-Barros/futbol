@@ -22,7 +22,7 @@ def get_season_matches(competition_id: int, season_id: int):
     """
     try:
         matches: pd.DataFrame = sb.matches(competition_id, season_id)
-        matches = matches.to_json(orient="records")
+        matches = matches.to_dict(orient="records")
         return JSONResponse(content=matches)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Competition {competition_id} or season {season_id} not found. error: {e}")

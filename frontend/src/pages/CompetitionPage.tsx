@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import type { Competition } from "../types/competition";
 import { useNavigate } from "react-router-dom";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const CompetitionsPage = () => {
      const [competitions, setCompetitions] = useState<Competition[]>([]);
@@ -16,6 +23,7 @@ const CompetitionsPage = () => {
                setLoading(false);
                return;
           }
+          console.log("Data loaded:", data);
           setCompetitions(data);
           setLoading(false);
           })
@@ -30,40 +38,46 @@ const CompetitionsPage = () => {
 
   return (
     <div>
-      <h2>Competiciones disponibles</h2>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-               <th>ID</th>
-               <th>Nombre</th>
-               <th>Temporada</th>
-               <th>País</th>
-               <th></th>
-          </tr>
-          </thead>
-          <tbody>
-               {competitions.map((c) => (
-               <tr
-                    key={`${c.competition_id}-${c.season_id}`}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => navigate(`/matches/${c.competition_id}/${c.season_id}`)}
-                    >
-                    <td>{c.competition_id}</td>
-                    <td>{c.competition_name}</td>
-                    <td>{c.season_name}</td>
-                    <td>{c.country_name}</td>
-                    <td>
-                         <button
-                         onClick={() => navigate(`/matches/${c.competition_id}/${c.season_id}`)}
-                         style={{ padding: "0.5rem 1rem", backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
+          <h2>Competiciones disponibles</h2>
+          <TableContainer component={Paper}>
+               <Table>
+                    <TableHead>
+                         <TableRow>
+                         <TableCell>Nombre</TableCell>
+                         <TableCell>Temporada</TableCell>
+                         <TableCell>País</TableCell>
+                         <TableCell>Genero</TableCell>
+                         <TableCell>Juvenil</TableCell>
+                         <TableCell>Internacional</TableCell>
+                         <TableCell></TableCell>
+                         </TableRow>
+                    </TableHead>
+                    <TableBody>
+                         {competitions.map((c) => (
+                         <TableRow
+                              key={`${c.competition_id}-${c.season_id}`}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => navigate(`/matches/${c.competition_id}/${c.season_id}`)}
                          >
-                         Ver partidos
-                         </button>
-                    </td>
-               </tr>
-               ))}
-          </tbody>
-      </table>
+                              <TableCell>{c.competition_name}</TableCell>
+                              <TableCell>{c.season_name}</TableCell>
+                              <TableCell>{c.country_name}</TableCell>
+                              <TableCell>{c.competition_gender}</TableCell>
+                              <TableCell>{c.competition_youth ? "Sí" : "No"}</TableCell>
+                              <TableCell>{c.competition_international ? "Sí" : "No"}</TableCell>
+                              <TableCell>
+                              <button
+                              onClick={() => navigate(`/matches/${c.competition_id}/${c.season_id}`)}
+                              style={{ padding: "0.5rem 1rem", backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
+                              >
+                              Ver partidos
+                              </button>
+                              </TableCell>
+                         </TableRow>
+                         ))}
+                    </TableBody>
+               </Table>
+          </TableContainer>
     </div>
   );
 };
