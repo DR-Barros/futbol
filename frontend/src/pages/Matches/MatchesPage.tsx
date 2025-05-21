@@ -43,15 +43,41 @@ const MatchesPage = () => {
       .catch((err) => {
         console.error("Error loading matches:", err);
         setMatches([]);
-        setError("Error loading matches");
+        setError("No hay partidos disponibles");
         setLoading(false);
       });
   }
   , [competitionId, seasonId]);
 
   if (loading) return <p>Cargando partidos...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!matches || matches.length === 0) return <p>No hay partidos disponibles</p>;
+  if (error) return(
+    <div>
+      <button
+        onClick={() => {
+          console.log("Navigating to competitions");
+          navigate("/competitions");
+        }}
+        style={{ padding: "0.5rem 1rem", backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
+      >
+        Volver
+      </button>
+      <p style={{ color: "red" }}>{error}</p>
+    </div>
+  )
+  if (!matches || matches.length === 0) return (
+    <div>
+      <button
+        onClick={() => {
+          console.log("Navigating to competitions");
+          navigate("/competitions");
+        }}
+        style={{ padding: "0.5rem 1rem", backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
+      >
+        Volver
+      </button>
+      <p>No se encontraron partidos para esta competición.</p>
+    </div>
+  )
   return (
     <div>
       <button

@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
+import "./Header.css";
 
 const Header = () => {
   return (
-    <header style={styles.header}>
+    <header className="header">
       <h1>⚽ FutbolApp</h1>
       <nav>
-        <ul style={styles.nav}>
-          <li><Link to="/" style={styles.linkButton}>Inicio</Link></li>
-          <li><Link to="/competitions" style={styles.linkButton}>Competiciones</Link></li>
-          {/* Agrega más enlaces si necesitas */}
+        <ul className="header-nav">
+          <li className="header-nav-item"><Link to="/" className="header-button">Inicio</Link></li>
+          <li className="header-nav-item"><Link to="/competitions" className="header-button">Competiciones</Link></li>
         </ul>
       </nav>
     </header>
@@ -16,19 +16,6 @@ const Header = () => {
 };
 
 const styles = {
-  header: {
-    padding: "1rem",
-    backgroundColor: "#222",
-    color: "white",
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-  },
-  nav: {
-    display: "flex",
-    gap: "1rem",
-    listStyle: "none",
-  },
   linkButton: {
     display: "inline-block",
     padding: "0.5rem 1rem",
