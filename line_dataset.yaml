@@ -1,0 +1,10 @@
+path: /home/dani/Desktop/futbol/dataset
+train: images/train
+val: images/valid
+
+names:
+  0: goal
+  1: field_line
+  2: semi_circle
+  3: center_circle
+  4: unknown

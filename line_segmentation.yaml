@@ -1,0 +1,36 @@
+path: /home/dani/Desktop/futbol/dataset-det
+train: images/train
+val: images/valid
+
+
+names:
+  0: Goal right crossbar
+  1: Goal right post left
+  2: Goal right post right
+  3: Goal left post left
+  4: Goal left post left 
+  5: Goal left post left
+  6: Goal left post right
+  7: Goal left crossbar
+  8: Small rect. right main
+  9: Small rect. right top
+  10: Side line right
+  11: Side line top
+  12: Side line bottom
+  13: Big rect. right top
+  14: Big rect. right main
+  15: Circle right
+  16: Side line left
+  17: Big rect. left top
+  18: Big rect. left bottom
+  19: Big rect. left main
+  20: Big rect. right bottom
+  21: Small rect. right bottom
+  22: Small rect. left top
+  23: Small rect. left bottom
+  24: Small rect. left main
+  25: Circle left
+  26: Circle central
+  27: Middle line
+  28: Line unknown
+  29: Goal unknown

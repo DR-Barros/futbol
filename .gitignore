@@ -1,5 +1,10 @@
 .venv
 SoccerNet/
+dataset/
+dataset-det/
+runs/
 __pycache__/
 .env
 .csv
+*.pt
+*.jpg
