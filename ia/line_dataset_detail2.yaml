@@ -1,0 +1,47 @@
+path: /home/dani/Desktop/futbol/dataset-det2
+train: images/train
+val: images/valid
+
+
+names:
+  0: Unknow
+  1: Small rect. right main
+  2: Small rect. right top
+  3: Side line right
+  4: Side line top
+  5: Side line bottom
+  6: Big rect. right top
+  7: Big rect. right main
+  8: Circle right
+  9: Side line left
+  10: Big rect. left top
+  11: Big rect. left bottom
+  12: Big rect. left main
+  13: Big rect. right bottom
+  14: Small rect. right bottom
+  15: Small rect. left top
+  16: Small rect. left bottom
+  17: Small rect. left main
+  18: Circle left
+  19: Circle central
+  20: Middle line
+  21: Small rect. right main (vertical)
+  22: Small rect. right top (vertical)
+  23: Side line right (vertical)
+  24: Side line top (vertical)
+  25: Side line bottom (vertical)
+  26: Big rect. right top (vertical)
+  27: Big rect. right main (vertical)
+  28: Circle right (vertical)
+  29: Side line left (vertical)
+  30: Big rect. left top (vertical)
+  31: Big rect. left bottom (vertical)
+  32: Big rect. left main (vertical)
+  33: Big rect. right bottom (vertical)
+  34: Small rect. right bottom (vertical)
+  35: Small rect. left top (vertical)
+  36: Small rect. left bottom (vertical)
+  37: Small rect. left main (vertical)
+  38: Circle left (vertical)
+  39: Circle central (vertical)
+  40: Middle line (vertical)
