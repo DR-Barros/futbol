@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import CompetitionPage from "./pages/CompetitionPage";
 import MatchesPage from "./pages/Matches/MatchesPage"
 import MatchPage from "./pages/Match/MatchPage";
+import Index from "./pages/Index";
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <Header />
       <main style={{ padding: "1rem" }}>
         <Routes>
-          <Route path="/" element={<h2>Bienvenido a FutbolApp</h2>} />
+          <Route path="/" element={<Index />} />
           <Route path="/competitions" element={<CompetitionPage />} />
           <Route path="/matches/:competitionId/:seasonId" element={<MatchesPage />} />
           <Route path="/match/:matchId/:competitionId/:seasonId" element={<MatchPage />} />
