@@ -52,3 +52,43 @@ def get_match(match_id: int, competition_id: int, season_id: int):
         return JSONResponse(content=match)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Match {match_id} not found. error: {e}")
+    
+    
+
+@router.get("/{match_id}/events")
+def get_match_events(match_id: int):
+    try:
+        events = sb.events(match_id=match_id, split=True)
+
+        eventos = list(events.keys())[1:]  # Omitimos el primero
+        data = []
+        for event in eventos:
+            df = events[event]
+            if "location" not in df.columns:
+                df["location"] = None
+
+            df_filtered = df[["period", "timestamp", "type", "location", "team"]]
+            df_filtered["event_type"] = event
+            data.append(df_filtered)
+
+        data = pd.concat(data)
+        data = data.sort_values(by=["period", "timestamp"]).reset_index(drop=True)
+
+        # Convertimos a formato JSON serializable
+        output = []
+        for _, row in data.iterrows():
+            location = row["location"]
+            location = location if isinstance(location, list) else [None, None]
+            output.append({
+                "period": row["period"],
+                "timestamp": row["timestamp"],
+                "event_type": row["event_type"],
+                "team": row["team"],
+                "x": location[0],
+                "y": location[1],
+            })
+
+        return {"events": output}
+    
+    except Exception as e:
+        return {"error": str(e)}
