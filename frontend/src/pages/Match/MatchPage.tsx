@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
-import React, { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Match, Lineup, Player } from "../../types/matches";
 import FormationPitch from "./components/FormationPitch";
 import ListPlayer from "./components/ListPlayers";
+import FootballField from "./components/FootballField";
 import "./MatchPage.css";
 
 const MatchPage = () => {
@@ -87,6 +88,7 @@ const MatchPage = () => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h3>Entrenadores: {match.home_managers} - {match.away_managers}</h3>
             </div>
+            <FootballField matchId={Number(matchId)} homeTeam={match.home_team} awayTeam={match.away_team} />
             <h3>Alineaciones</h3>
             <div className="match-page__lineups">
                 <ListPlayer players={localPlayers} />
