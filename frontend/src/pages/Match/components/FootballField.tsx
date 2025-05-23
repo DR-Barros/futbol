@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 interface Event {
   period: number;
@@ -22,8 +22,11 @@ const FootballField: React.FC<Props> = ({ matchId, homeTeam, awayTeam }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isMounted = useRef(false);
 
   useEffect(() => {
+    if (isMounted.current) return; // Prevents re-fetching on component re-render
+    isMounted.current = true; // Set the ref to true after the first render
     fetch(`http://localhost:8000/api/v1/matches/${matchId}/events`)
       .then((res) => res.json())
       .then((data) => setEvents(data.events || []));

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import React, { use, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import type { Match } from "../../types/matches";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,42 +11,45 @@ import Paper from '@mui/material/Paper';
 
 
 const MatchesPage = () => {
-  const { competitionId, seasonId } = useParams<{ competitionId: string; seasonId: string }>();
-  const navigate = useNavigate();
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+    const { competitionId, seasonId } = useParams<{ competitionId: string; seasonId: string }>();
+    const navigate = useNavigate();
+    const [matches, setMatches] = useState<Match[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const isMounted = useRef(false);
 
-  useEffect(() => {
-    if (!competitionId || !seasonId) {
-      setError("Invalid competition or season ID");
-      setLoading(false);
-      return;
-    }
-    fetch(`http://localhost:8000/api/v1/competitions/${competitionId}/${seasonId}/matches`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
+    useEffect(() => {
+        if (isMounted.current) return; // Prevents re-fetching on component re-render
+        isMounted.current = true; // Set the ref to true after the first render
+        if (!competitionId || !seasonId) {
+        setError("Invalid competition or season ID");
+        setLoading(false);
+        return;
         }
-        return res.json();
-      })
-      .then((data) => {
-        //ordenar los partidos por fecha
-        data.sort((a: Match, b: Match) => {
-          const dateA = new Date(`${a.match_date}T${a.kick_off}`);
-          const dateB = new Date(`${b.match_date}T${b.kick_off}`);
-          return dateA.getTime() - dateB.getTime();
+        fetch(`http://localhost:8000/api/v1/competitions/${competitionId}/${seasonId}/matches`)
+        .then((res) => {
+            if (!res.ok) {
+            throw new Error("Network response was not ok");
+            }
+            return res.json();
+        })
+        .then((data) => {
+            //ordenar los partidos por fecha
+            data.sort((a: Match, b: Match) => {
+            const dateA = new Date(`${a.match_date}T${a.kick_off}`);
+            const dateB = new Date(`${b.match_date}T${b.kick_off}`);
+            return dateA.getTime() - dateB.getTime();
+            });
+            setMatches(data);
+            setLoading(false);
+        })
+        .catch((err) => {
+            console.error("Error loading matches:", err);
+            setMatches([]);
+            setError("No hay partidos disponibles");
+            setLoading(false);
         });
-        setMatches(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error loading matches:", err);
-        setMatches([]);
-        setError("No hay partidos disponibles");
-        setLoading(false);
-      });
-  }
+    }
   , [competitionId, seasonId]);
 
   if (loading) return <p>Cargando partidos...</p>;

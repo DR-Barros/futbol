@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { Competition } from "../types/competition";
 import { useNavigate } from "react-router-dom";
 import Table from '@mui/material/Table';
@@ -13,26 +13,29 @@ const CompetitionsPage = () => {
      const [competitions, setCompetitions] = useState<Competition[]>([]);
      const [loading, setLoading] = useState(true);
      const navigate = useNavigate();
+     const isMounted = useRef(false);
 
      useEffect(() => {
-     fetch("http://localhost:8000/api/v1/competitions") // Ajusta el endpoint si es necesario
-          .then((res) => res.json())
-          .then((data) => {
-          if (!Array.isArray(data)) {
-               console.error("Data is not an array:", data);
-               setLoading(false);
-               return;
-          }
-          console.log("Data loaded:", data);
-          setCompetitions(data);
-          setLoading(false);
-          })
-          .catch((err) => {
-          console.error("Error loading competitions:", err);
-          setLoading(false);
-          });
-          
-     }, []);
+          if (isMounted.current) return; 
+          isMounted.current = true; 
+          console.log("Loading competitions...");
+          fetch("http://localhost:8000/api/v1/competitions")
+               .then((res) => res.json())
+               .then((data) => {
+                    if (!Array.isArray(data)) {
+                         console.error("Data is not an array:", data);
+                         setLoading(false);
+                         return;
+                    }
+                    console.log("Data loaded:", data);
+                    setCompetitions(data);
+                    setLoading(false);
+               })
+               .catch((err) => {
+                    console.error("Error loading competitions:", err);
+                    setLoading(false);
+               });
+     }, []); 
 
   if (loading) return <p>Cargando competiciones...</p>;
 

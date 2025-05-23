@@ -24,7 +24,6 @@ def get_match(match_id: int, competition_id: int, season_id: int):
                     lineup = starting[i]["tactics"]["lineup"]
                     new_lineup = []
                     for player in lineup:
-                        print(player)
                         player_id = player["player"]["id"]
                         player_name = player["player"]["name"]
                         player_position = player["position"]["name"]
@@ -36,7 +35,6 @@ def get_match(match_id: int, competition_id: int, season_id: int):
                             "shirt_number": jersey_number
                         })
                     starting[i]["tactics"]["lineup"] = new_lineup
-                    print(starting[i]["tactics"]["lineup"])
                 match[key] = starting
             else:
                 df = match[key]

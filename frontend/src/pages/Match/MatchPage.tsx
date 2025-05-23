@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { Match, Lineup, Player } from "../../types/matches";
 import FormationPitch from "./components/FormationPitch";
 import ListPlayer from "./components/ListPlayers";
@@ -15,8 +15,11 @@ const MatchPage = () => {
     const [lineups, setLineups] = useState<Lineup[]>([]);
     const [localPlayers, setLocalPlayers] = useState<Player[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
+    const isMounted = useRef(false);
 
     useEffect(() => {
+        if (isMounted.current) return; // Prevents re-fetching on component re-render
+        isMounted.current = true; // Set the ref to true after the first render
         if (!matchId) {
             setError("Invalid match ID");
             setLoading(false);
