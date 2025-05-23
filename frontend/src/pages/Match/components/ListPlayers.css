@@ -1,0 +1,14 @@
+.player-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.player-list h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+.player-list p{
+    margin: 0;
+    font-size: 0.8rem;
+}

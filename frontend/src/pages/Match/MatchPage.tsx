@@ -1,7 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import React, { use, useEffect, useState } from "react";
-import type { Match, Lineup } from "../../types/matches";
+import type { Match, Lineup, Player } from "../../types/matches";
 import FormationPitch from "./components/FormationPitch";
+import ListPlayer from "./components/ListPlayers";
+import "./MatchPage.css";
 
 const MatchPage = () => {
     const { matchId, competitionId, seasonId } = useParams<{ matchId: string; competitionId: string; seasonId: string }>();
@@ -10,6 +12,8 @@ const MatchPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lineups, setLineups] = useState<Lineup[]>([]);
+    const [localPlayers, setLocalPlayers] = useState<Player[]>([]);
+    const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
 
     useEffect(() => {
         if (!matchId) {
@@ -27,6 +31,8 @@ const MatchPage = () => {
             .then((data) => {
                 setMatch(data.details[0]);
                 setLineups(data.starting_xis);
+                setLocalPlayers(data.players[data.details[0].home_team]);
+                setAwayPlayers(data.players[data.details[0].away_team]);
                 setLoading(false);
             })
             .catch((err) => {
@@ -82,7 +88,11 @@ const MatchPage = () => {
                 <h3>Entrenadores: {match.home_managers} - {match.away_managers}</h3>
             </div>
             <h3>Alineaciones</h3>
-            <FormationPitch lineup={lineups} />
+            <div className="match-page__lineups">
+                <ListPlayer players={localPlayers} />
+                <FormationPitch lineup={lineups} />
+                <ListPlayer players={awayPlayers} />
+            </div>
         </div>
     );
 }
