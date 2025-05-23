@@ -9,7 +9,6 @@ const ListPlayer: React.FC<Props> = ({ players }) => {
   return (
     <div className="player-list">
       {players.map((player) => {
-        console.log("player", player);
         if (!player.positions || player.positions.length === 0) {
           return (
             <div key={player.player_id} className="player-card">
