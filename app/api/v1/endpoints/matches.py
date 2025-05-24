@@ -18,7 +18,182 @@ def get_match(match_id: int, competition_id: int, season_id: int):
         players = sb.lineups(match_id=match_id)
         keys = match.keys()
         for key in keys:
-            if key == "starting_xis":
+            if key == "bad_behaviours":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "bad_behaviour_card"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "ball_receipts":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "ball_receipt_outcome", "under_pressure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "ball_recoverys":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "under_pressure", "ball_recovery_offensive", "ball_recovery_recovery_failure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "blocks":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "counterpress"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "carrys":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "duration", "carry_end_location", "under_pressure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "clearances":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "clearance_body_part", "out", "clearance_aerial_won", "under_pressure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "dispossesseds":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "under_pressure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "dribbled_pasts":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "counterpress"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "dribbles":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "dribble_nutmeg", "dribble_outcome", "under_pressure","dribble_overrun"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "duels":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "duel_outcome", "duel_type", "counterpress", "under_pressure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "foul_committeds":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "counterpress", "foul_committed_card", "foul_committed_advantage", "foul_committed_type"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "foul_wons":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "foul_won_advantage", "foul_won_defensive", "under_pressure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "goal_keepers":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "goalkeeper_outcome", "goalkeeper_type", "goalkeeper_body_part", "goalkeeper_end_location", "goalkeeper_position", "goalkeeper_technique", "under_pressure"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "half_ends":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "half_starts":
+                match[key] = None
+            elif key == "injury_stoppages":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "injury_stoppage_in_chain"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "interceptions":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "interception_outcome", "under_pressure", "counterpress"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif keys == 'miscontrols':
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "passes":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[[ 'period', 'timestamp', 'type', 'team', 'player',
+                    'location', 'duration',
+                    'pass_recipient', 'pass_length',  'pass_height',
+                    'pass_end_location', 'pass_body_part', 'pass_type',
+                    'pass_outcome',  'pass_shot_assist',
+                    ]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "player_offs":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "player_on":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "pressures":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player", "counterpress"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "referee_ball_drops":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "shields":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "player"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "shots":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "shot_type", "shot_outcome", "shot_statsbomb_xg", "player", "shot_body_part", 'shot_end_location']] 
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "starting_xis":
                 starting = match[key][["team", "tactics"]].to_dict(orient="records")
                 for i in range(len(starting)):
                     lineup = starting[i]["tactics"]["lineup"]
@@ -43,24 +218,11 @@ def get_match(match_id: int, competition_id: int, season_id: int):
                 df = df[["period", "timestamp", "player", "team", "substitution_replacement", "type", "location"]]
                 df = df.fillna("")
                 match[key] = df.to_dict(orient="records")
-            elif key == "shots":
+            elif key == "tactical_shifts":
                 df = match[key]
                 if "location" not in df.columns:
                     df["location"] = None
-                df = df[["period", "timestamp", "type", "location", "team", "shot_type", "shot_outcome", "shot_statsbomb_xg", "player", "shot_body_part", 'shot_end_location']] 
-                df = df.fillna("")
-                match[key] = df.to_dict(orient="records")
-            elif key == "passes":
-                df = match[key]
-                print(df.columns)
-                if "location" not in df.columns:
-                    df["location"] = None
-                df = df[[ 'period', 'timestamp', 'type', 'team', 'player',
-                    'location', 'duration',
-                    'pass_recipient', 'pass_length',  'pass_height',
-                    'pass_end_location', 'pass_body_part', 'pass_type',
-                    'pass_outcome',  'pass_shot_assist',
-                    ]]
+                df = df[["period", "timestamp", "type", "location", "team", "tactics"]]
                 df = df.fillna("")
                 match[key] = df.to_dict(orient="records")
             else:
