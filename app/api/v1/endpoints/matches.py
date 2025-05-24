@@ -36,6 +36,33 @@ def get_match(match_id: int, competition_id: int, season_id: int):
                         })
                     starting[i]["tactics"]["lineup"] = new_lineup
                 match[key] = starting
+            elif key == "substitutions":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "player", "team", "substitution_replacement", "type", "location"]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "shots":
+                df = match[key]
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[["period", "timestamp", "type", "location", "team", "shot_type", "shot_outcome", "shot_statsbomb_xg", "player", "shot_body_part", 'shot_end_location']] 
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
+            elif key == "passes":
+                df = match[key]
+                print(df.columns)
+                if "location" not in df.columns:
+                    df["location"] = None
+                df = df[[ 'period', 'timestamp', 'type', 'team', 'player',
+                    'location', 'duration',
+                    'pass_recipient', 'pass_length',  'pass_height',
+                    'pass_end_location', 'pass_body_part', 'pass_type',
+                    'pass_outcome',  'pass_shot_assist',
+                    ]]
+                df = df.fillna("")
+                match[key] = df.to_dict(orient="records")
             else:
                 df = match[key]
                 df = df.fillna("")
