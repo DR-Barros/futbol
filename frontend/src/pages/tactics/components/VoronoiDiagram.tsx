@@ -255,11 +255,11 @@ const VoronoiDiagram = ({ width = 400, height = 600 }) => {
                 .attr("id", "tooltip")
                 .attr("x", x + 10)
                 .attr("y", y - 10)
-                .attr("fill", "#fff")
+                .attr("fill", "#000")
                 .attr("stroke", "#000")
                 .attr("stroke-width", 0.5)
                 .attr("font-size", 16)
-                .attr("font-family", "sans-serif")
+                .attr("font-family", "VoronoiDiagram")
                 .text(d.name);
             })
             .on("mousemove", function (event: any) {
@@ -295,6 +295,33 @@ const VoronoiDiagram = ({ width = 400, height = 600 }) => {
                         const newY = Math.max(0, Math.min(height, event.y));
                         setBallPosition([newX, newY]);
                     })
+            )
+            .on("mouseover", function (event: any) {
+                // Mostrar tooltip
+                const [x, y] = d3.pointer(event, svg.node());
+                svg.append("text")
+                    .attr("id", "tooltip")
+                    .attr("x", x + 10)
+                    .attr("y", y - 10)
+                    .attr("fill", "#000")
+                    .attr("stroke", "#000")
+                    .attr("stroke-width", 0.5)
+                    .attr("font-size", 16)
+                    .attr("font-family", "VoronoiDiagram")
+                    .text("Pelota");
+            })
+            .on("mousemove", function (event: any) {
+                // Mover tooltip
+                const [x, y] = d3.pointer(event, svg.node());
+                svg.select("#tooltip")
+                    .attr("x", x + 10)
+                    .attr("y", y - 10);
+            }
+            )
+            .on("mouseout", function () {
+                // Quitar tooltip
+                svg.select("#tooltip").remove();
+            }
             );
     }, [points, width, height, ballPosition, team1Color, team2Color]);
 
