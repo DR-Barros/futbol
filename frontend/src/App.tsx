@@ -5,6 +5,7 @@ import CompetitionPage from "./pages/CompetitionPage";
 import MatchesPage from "./pages/Matches/MatchesPage"
 import MatchPage from "./pages/Match/MatchPage";
 import Index from "./pages/Index";
+import TacticsPage from "./pages/tactics/TacticsPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/competitions" element={<CompetitionPage />} />
           <Route path="/matches/:competitionId/:seasonId" element={<MatchesPage />} />
           <Route path="/match/:matchId/:competitionId/:seasonId" element={<MatchPage />} />
+          <Route path="/tactics" element={<TacticsPage />} />
         </Routes>
       </main>
       <Footer />
