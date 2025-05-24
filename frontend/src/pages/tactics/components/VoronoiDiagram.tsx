@@ -1,6 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
+interface Point {
+    x: number;
+    y: number;
+    name: string;
+    team: number;
+}
+
 const VoronoiDiagram = ({ width = 400, height = 600 }) => {
     const [winndowsWidth, setWindowsWidth] = useState(window.innerWidth);
     useEffect(() => {
@@ -16,76 +23,89 @@ const VoronoiDiagram = ({ width = 400, height = 600 }) => {
     const formaciones = [
         { name: "4-4-2", positions: [
             { name: "Portero", x: 0.5, y: 0.08 }, 
-            { name: "Defensa", x: 0.15, y: 0.20 },
-            { name: "Defensa", x: 0.35, y: 0.20 },
-            { name: "Defensa", x: 0.65, y: 0.20 },
-            { name: "Defensa", x: 0.85, y: 0.20 },
-            { name: "Centrocampista", x: 0.15, y: 0.45 },
+            { name: "Lateral Derecho", x: 0.15, y: 0.20 },
+            { name: "Defensa Central", x: 0.35, y: 0.20 },
+            { name: "Defensa Central", x: 0.65, y: 0.20 },
+            { name: "Lateral Izquierdo", x: 0.85, y: 0.20 },
+            { name: "Centrocampista Derecho", x: 0.15, y: 0.45 },
             { name: "Centrocampista", x: 0.35, y: 0.45 },
             { name: "Centrocampista", x: 0.65, y: 0.45 },
-            { name: "Centrocampista", x: 0.85, y: 0.45 },
+            { name: "Centrocampista Izquierdo", x: 0.85, y: 0.45 },
             { name: "Delantero", x: 0.35, y: 0.75 },
             { name: "Delantero", x: 0.65, y: 0.75 }
         ]},
         { name: "4-3-3", positions: [
             { name: "Portero", x: 0.5, y: 0.08 }, 
-            { name: "Defensa", x: 0.15, y: 0.20 },
-            { name: "Defensa", x: 0.35, y: 0.20 },
-            { name: "Defensa", x: 0.65, y: 0.20 },
-            { name: "Defensa", x: 0.85, y: 0.20 },
-            { name: "Centrocampista", x: 0.25, y: 0.45 },
+            { name: "Lateral Derecho", x: 0.15, y: 0.20 },
+            { name: "Defensa Central", x: 0.35, y: 0.20 },
+            { name: "Defensa Central", x: 0.65, y: 0.20 },
+            { name: "Lateral Izquierdo", x: 0.85, y: 0.20 },
+            { name: "Centrocampista Derecho", x: 0.25, y: 0.45 },
             { name: "Centrocampista", x: 0.5, y: 0.45 },
             { name: "Centrocampista", x: 0.75, y: 0.45 },
-            { name: "Delantero", x: 0.25, y: 0.75 },
+            { name: "Delantero Derecho", x: 0.25, y: 0.75 },
             { name: "Delantero", x: 0.5, y: 0.85 },
-            { name: "Delantero", x: 0.75, y: 0.75 }
+            { name: "Delantero Izquierdo", x: 0.75, y: 0.75 }
         ]},
         { name: "4-2-3-1", positions: [
             { name: "Portero", x: 0.5, y: 0.08 }, 
-            { name: "Defensa", x: 0.15, y: 0.20 },
-            { name: "Defensa", x: 0.35, y: 0.20 },
-            { name: "Defensa", x: 0.65, y: 0.20 },
-            { name: "Defensa", x: 0.85, y: 0.20 },
+            { name: "Lateral Derecho", x: 0.15, y: 0.20 },
+            { name: "Defensa Central", x: 0.35, y: 0.20 },
+            { name: "Defensa Central", x: 0.65, y: 0.20 },
+            { name: "Lateral Izquierdo", x: 0.85, y: 0.20 },
             { name: "Centrocampista", x: 0.35, y: 0.45 },
             { name: "Centrocampista", x: 0.65, y: 0.45 },
             { name: "Centrocampista", x: 0.5, y: 0.6 },
-            { name: "Delantero", x: 0.25, y: 0.6 },
+            { name: "Delantero Derecho", x: 0.25, y: 0.6 },
             { name: "Delantero", x: 0.5, y: 0.75 },
-            { name: "Delantero", x: 0.75, y: 0.6 }
+            { name: "Delantero Izquierdo", x: 0.75, y: 0.6 }
         ]},
         { name: "3-4-3", positions: [
             { name: "Portero", x: 0.5, y: 0.08 }, 
-            { name: "Defensa", x: 0.25, y: 0.20 },
-            { name: "Defensa", x: 0.5, y: 0.20 },
-            { name: "Defensa", x: 0.75, y: 0.20 },
-            { name: "Centrocampista", x: 0.15, y: 0.45 },
+            { name: "Defensa Central", x: 0.25, y: 0.20 },
+            { name: "Defensa Central", x: 0.5, y: 0.20 },
+            { name: "Defensa Central", x: 0.75, y: 0.20 },
+            { name: "Centrocampista Derecho", x: 0.15, y: 0.45 },
             { name: "Centrocampista", x: 0.35, y: 0.45 },
             { name: "Centrocampista", x: 0.65, y: 0.45 },
-            { name: "Centrocampista", x: 0.85, y: 0.45 },
+            { name: "Centrocampista Izquierdo", x: 0.85, y: 0.45 },
             { name: "Delantero", x: 0.25, y: 0.6 },
             { name: "Delantero", x: 0.5, y: 0.75 },
-            { name: "Delantero", x: 0.75, y: 0.6 }
+            { name: "Delantero Izquierdo", x: 0.75, y: 0.6 }
         ]},
         { name: "3-5-2", positions: [
             { name: "Portero", x: 0.5, y: 0.08 }, 
-            { name: "Defensa", x: 0.25, y: 0.20 },
-            { name: "Defensa", x: 0.5, y: 0.20 },
-            { name: "Defensa", x: 0.75, y: 0.20 },
-            { name: "Centrocampista", x: 0.15, y: 0.45 },
+            { name: "Defensa Central", x: 0.25, y: 0.20 },
+            { name: "Defensa Central", x: 0.5, y: 0.20 },
+            { name: "Defensa Central", x: 0.75, y: 0.20 },
+            { name: "Centrocampista Derecho", x: 0.15, y: 0.45 },
             { name: "Centrocampista", x: 0.35, y: 0.45 },
             { name: "Centrocampista", x: 0.5, y: 0.45 },
             { name: "Centrocampista", x: 0.65, y: 0.45 },
-            { name: "Centrocampista", x: 0.85, y: 0.45 },
+            { name: "Centrocampista Izquierdo", x: 0.85, y: 0.45 },
             { name: "Delantero", x: 0.35, y: 0.75 },
             { name: "Delantero", x: 0.65, y: 0.75 }
         ]},
+        { name: "5-4-1", positions: [
+            { name: "Portero", x: 0.5, y: 0.08 }, 
+            { name: "Lateral Derecho", x: 0.1, y: 0.2 },
+            { name: "Defensa Central", x: 0.3, y: 0.2 },
+            { name: "Defensa Central", x: 0.5, y: 0.2 },
+            { name: "Defensa Central", x: 0.7, y: 0.2 },
+            { name: "Lateral Izquierdo", x: 0.9, y: 0.2 },
+            { name: "Centrocampista Derecho", x: 0.15, y: 0.45 },
+            { name: "Centrocampista", x: 0.35, y: 0.45 },
+            { name: "Centrocampista", x: 0.65, y: 0.45 },
+            { name: "Centrocampista Izquierdo", x: 0.85, y: 0.45 },
+            { name: "Delantero", x: 0.5, y: 0.75 }
+        ]},
         { name: "5-3-2", positions: [
             { name: "Portero", x: 0.5, y: 0.08 }, 
-            { name: "Defensa", x: 0.1, y: 0.3 },
-            { name: "Defensa", x: 0.3, y: 0.2 },
-            { name: "Defensa", x: 0.5, y: 0.2 },
-            { name: "Defensa", x: 0.7, y: 0.2 },
-            { name: "Defensa", x: 0.9, y: 0.3 },
+            { name: "Lateral Derecho", x: 0.1, y: 0.3 },
+            { name: "Defensa Central", x: 0.3, y: 0.2 },
+            { name: "Defensa Central", x: 0.5, y: 0.2 },
+            { name: "Defensa Central", x: 0.7, y: 0.2 },
+            { name: "Lateral Izquierdo", x: 0.9, y: 0.3 },
             { name: "Centrocampista", x: 0.25, y: 0.45 },
             { name: "Centrocampista", x: 0.5, y: 0.45 },
             { name: "Centrocampista", x: 0.75, y: 0.45 },
@@ -105,34 +125,40 @@ const VoronoiDiagram = ({ width = 400, height = 600 }) => {
         const f1 = formaciones.find(f => f.name === formation1Name);
         const f2 = formaciones.find(f => f.name === formation2Name);
         // Si alguna formación no tiene suficientes posiciones, rellena con random
-        const f1Points = (f1?.positions ?? []).map(p => [
-            p.x * width,
-            p.y * height
-        ]);
-        const f2Points = (f2?.positions ?? []).map(p => [
-            p.x * width,
-            (1 - p.y) * height
-        ]);
+        const f1Points = (f1?.positions ?? []).map(p => ({
+            x: p.x * width,
+            y: p.y * height,
+            name: p.name,
+            team: 1,
+        }));
+        const f2Points = (f2?.positions ?? []).map(p => ({
+            x: (1 -p.x) * width,
+            y: (1 - p.y) * height,
+            name: p.name,
+            team: 2,
+        }));
         // Rellenar si faltan jugadores
         while (f1Points.length < teamSize) {
-            f1Points.push([
-                Math.random() * (width * 0.4) + width * 0.05,
-                Math.random() * (height * 0.9) + height * 0.05
-            ]);
+            f1Points.push({
+                x: Math.random() * (width * 0.4) + width * 0.05,
+                y: Math.random() * (height * 0.9) + height * 0.05,
+                name: "Extra",
+                team: 1,
+            });
         }
         while (f2Points.length < teamSize) {
-            f2Points.push([
-                Math.random() * (width * 0.4) + width * 0.55,
-                Math.random() * (height * 0.9) + height * 0.05
-            ]);
+            f2Points.push({
+                x: Math.random() * (width * 0.4) + width * 0.55,
+                y: Math.random() * (height * 0.9) + height * 0.05,
+                name: "Extra",
+                team: 2,
+            });
         }
         return [...f1Points, ...f2Points];
     };
 
     // Estado de puntos, inicializado según formaciones
-    const [points, setPoints] = useState(() =>
-        getPointsFromFormations(selectedFormation1, selectedFormation2)
-    );
+    const [points, setPoints] = useState<Point[]>(getPointsFromFormations(selectedFormation1, selectedFormation2));
     const [ballPosition, setBallPosition] = useState([width * 0.5, height * 0.5]);
 
     // Actualiza los puntos cuando cambian las formaciones
@@ -199,35 +225,61 @@ const VoronoiDiagram = ({ width = 400, height = 600 }) => {
             .attr("stroke-width", 3)
             .attr("fill", "none");
 
-        const delaunay = d3.Delaunay.from(points);
+        const delaunay = d3.Delaunay.from(points, (d) => d.x, (d) => d.y);
         const voronoi = delaunay.voronoi([0, 0, width, height]);
 
         // Dibujar regiones solo con borde, sin color de fondo
         for (let i = 0; i < points.length; i++) {
             svg
-                .append("path")
-                .attr("d", voronoi.renderCell(i))
-                .attr("stroke", (i < teamSize ? team1Color : team2Color))
-                .attr("fill", "none");
+            .append("path")
+            .attr("d", voronoi.renderCell(i))
+            .attr("stroke", points[i].team === 1 ? team1Color : team2Color)
+            .attr("fill", "none");
         }
 
         // Dibujar y hacer drag en los puntos
         svg
-            .selectAll("circle")
+            .selectAll("circle.player")
             .data(points)
             .enter()
             .append("circle")
+            .attr("class", "player")
             .attr("r", 8)
-            .attr("fill", (d, i) => (i < teamSize ? team1Color : team2Color))
-            .attr("cx", (d) => d[0])
-            .attr("cy", (d) => d[1])
+            .attr("fill", (d: Point) => (d.team === 1 ? team1Color : team2Color))
+            .attr("cx", (d: Point) => d.x)
+            .attr("cy", (d: Point) => d.y)
+            .on("mouseover", function (event: any, d: Point) {
+            // Mostrar tooltip
+            const [x, y] = d3.pointer(event, svg.node());
+            svg.append("text")
+                .attr("id", "tooltip")
+                .attr("x", x + 10)
+                .attr("y", y - 10)
+                .attr("fill", "#fff")
+                .attr("stroke", "#000")
+                .attr("stroke-width", 0.5)
+                .attr("font-size", 16)
+                .attr("font-family", "sans-serif")
+                .text(d.name);
+            })
+            .on("mousemove", function (event: any) {
+            // Mover tooltip
+            const [x, y] = d3.pointer(event, svg.node());
+            svg.select("#tooltip")
+                .attr("x", x + 10)
+                .attr("y", y - 10);
+            })
+            .on("mouseout", function () {
+            // Quitar tooltip
+            svg.select("#tooltip").remove();
+            })
             .call(
-                d3.drag()
-                    .on("drag", function (event: any, d: number[]) {
-                        d[0] = Math.max(0, Math.min(width, event.x));
-                        d[1] = Math.max(0, Math.min(height, event.y));
-                        setPoints([...points]);
-                    })
+            d3.drag()
+                .on("drag", function (event: any, d: Point) {
+                d.x = Math.max(0, Math.min(width, event.x));
+                d.y = Math.max(0, Math.min(height, event.y));
+                setPoints([...points]);
+                })
             );
         // Dibujar la pelota
         svg
@@ -258,6 +310,7 @@ const VoronoiDiagram = ({ width = 400, height = 600 }) => {
                 width: sideScreen ? width * 1.5 : width,
                 height: sideScreen ? height : height * 1.5,
             }}
+            className='voronoi-diagram'
         >
             <svg ref={svgRef} width={width} height={height} style={{ border: "1px solid #ccc" }} />
             <div style={{ marginTop: "10px", marginLeft: sideScreen ? "20px" : "0px"}}>
