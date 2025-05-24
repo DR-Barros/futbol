@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const features = [
   "⚽ Consulta partidos de diversas competiciones y temporadas.",
   "📊 Explora estadísticas de jugadores y equipos.",
-  //"📰 Mantente informado con las últimas noticias del mundo del fútbol.",
+  "🗺️ Juega con tácticas en un diagrama Voronoi interactivo.",
 ];
 
 const Index = () => {
