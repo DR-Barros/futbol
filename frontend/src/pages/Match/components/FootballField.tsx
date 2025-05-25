@@ -1,36 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
 
-interface Event {
+export interface Event {
   period: number;
   timestamp: string;
-  event_type: string;
+  type: string;
   team: string;
-  x: number | null;
-  y: number | null;
+  player: string;
+  location: [number | null, number | null];
+  [key: string]: any; // Permite propiedades adicionales
 }
 
 interface Props {
-  matchId: number;
   homeTeam: string;
   awayTeam: string;
+  events: Event[];
 }
 
 const FIELD_WIDTH = 120;
 const FIELD_HEIGHT = 80;
 
-const FootballField: React.FC<Props> = ({ matchId, homeTeam, awayTeam }) => {
-  const [events, setEvents] = useState<Event[]>([]);
+const FootballField: React.FC<Props> = ({homeTeam, awayTeam, events}) => {
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    if (isMounted.current) return; // Prevents re-fetching on component re-render
-    isMounted.current = true; // Set the ref to true after the first render
-    fetch(`http://localhost:8000/api/v1/matches/${matchId}/events`)
-      .then((res) => res.json())
-      .then((data) => setEvents(data.events || []));
-  }, [matchId]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -44,7 +35,12 @@ const FootballField: React.FC<Props> = ({ matchId, homeTeam, awayTeam }) => {
     return () => clearInterval(interval);
   }, [isPlaying, events]);
 
+  useEffect(() => {
+    console.log("Current Event Index:", events);
+  }, [events.length]);
+
   const current = events[currentEventIndex];
+  console.log("Current Event:", current);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -74,19 +70,51 @@ const FootballField: React.FC<Props> = ({ matchId, homeTeam, awayTeam }) => {
 
 
             {/* Evento */}
-            {current && current.x !== null && current.y !== null && (
-            <circle
-                cx={current.team === homeTeam ? (current.x / FIELD_WIDTH) * 600 : 600 - (current.x / FIELD_WIDTH) * 600}
-                cy={current.team === homeTeam ? (current.y / FIELD_HEIGHT) * 400 : 400 - (current.y / FIELD_HEIGHT) * 400}
-                r={8}
-                fill={current.team === homeTeam ? "blue" : "red"}
-            />
+            {current && current.location && current.location[0] !== null && current.location[1] !== null && (
+              <>
+              <circle
+                  cx={current.team === homeTeam ? (current.location[0] / FIELD_WIDTH) * 600 : 600 - (current.location[0] / FIELD_WIDTH) * 600}
+                  cy={current.team === homeTeam ? (current.location[1] / FIELD_HEIGHT) * 400 : 400 - (current.location[1] / FIELD_HEIGHT) * 400}
+                  r={8}
+                  fill={current.team === homeTeam ? "blue" : "red"}
+              />
+              {current.pass_end_location && (
+                  <line
+                      x1={current.team === homeTeam ? (current.location[0] / FIELD_WIDTH) * 600 : 600 - (current.location[0] / FIELD_WIDTH) * 600}
+                      y1={current.team === homeTeam ? (current.location[1] / FIELD_HEIGHT) * 400 : 400 - (current.location[1] / FIELD_HEIGHT) * 400}
+                      x2={current.team === homeTeam ? (current.pass_end_location[0] / FIELD_WIDTH) * 600 : 600 - (current.pass_end_location[0] / FIELD_WIDTH) * 600}
+                      y2={current.team === homeTeam ? (current.pass_end_location[1] / FIELD_HEIGHT) * 400 : 400 - (current.pass_end_location[1] / FIELD_HEIGHT) * 400}
+                      stroke="black"
+                      strokeWidth="2"
+                  />
+              )}
+              {current.carry_end_location && (
+                  <line
+                      x1={current.team === homeTeam ? (current.location[0] / FIELD_WIDTH) * 600 : 600 - (current.location[0] / FIELD_WIDTH) * 600}
+                      y1={current.team === homeTeam ? (current.location[1] / FIELD_HEIGHT) * 400 : 400 - (current.location[1] / FIELD_HEIGHT) * 400}
+                      x2={current.team === homeTeam ? (current.carry_end_location[0] / FIELD_WIDTH) * 600 : 600 - (current.carry_end_location[0] / FIELD_WIDTH) * 600}
+                      y2={current.team === homeTeam ? (current.carry_end_location[1] / FIELD_HEIGHT) * 400 : 400 - (current.carry_end_location[1] / FIELD_HEIGHT) * 400}
+                      stroke="black"
+                      strokeWidth="2"
+                  />
+              )}
+              {current.shot_end_location && (
+                  <line
+                      x1={current.team === homeTeam ? (current.location[0] / FIELD_WIDTH) * 600 : 600 - (current.location[0] / FIELD_WIDTH) * 600}
+                      y1={current.team === homeTeam ? (current.location[1] / FIELD_HEIGHT) * 400 : 400 - (current.location[1] / FIELD_HEIGHT) * 400}
+                      x2={current.team === homeTeam ? (current.shot_end_location[0] / FIELD_WIDTH) * 600 : 600 - (current.shot_end_location[0] / FIELD_WIDTH) * 600}
+                      y2={current.team === homeTeam ? (current.shot_end_location[1] / FIELD_HEIGHT) * 400 : 400 - (current.shot_end_location[1] / FIELD_HEIGHT) * 400}
+                      stroke="black"
+                      strokeWidth="2"
+                  />
+              )}
+              </>
             )}
         </svg>
 
         </div>
         <div style={{ marginTop: 10 }}>
-        <strong>Event:</strong> {current?.event_type} | <strong>Time:</strong> {current?.timestamp}s | <strong>Team:</strong> {current?.team}
+        <strong>Evento:</strong> {current?.type} | <strong>Periodo:</strong> {current?.period} | <strong>Tiempo:</strong> {current?.timestamp}s | <strong>Equipo:</strong> {current?.team} | <strong>Jugador:</strong> {current?.player} 
         </div>
         <div>
             <button

@@ -4,6 +4,7 @@ import type { Match, Lineup, Player } from "../../types/matches";
 import FormationPitch from "./components/FormationPitch";
 import ListPlayer from "./components/ListPlayers";
 import FootballField from "./components/FootballField";
+import type { Event } from "./components/FootballField";
 import "./MatchPage.css";
 
 const MatchPage = () => {
@@ -15,6 +16,7 @@ const MatchPage = () => {
     const [lineups, setLineups] = useState<Lineup[]>([]);
     const [localPlayers, setLocalPlayers] = useState<Player[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
+    const [allEvents, setAllEvents] = useState<Event[]>([]);
     const isMounted = useRef(false);
 
     useEffect(() => {
@@ -37,6 +39,24 @@ const MatchPage = () => {
                 setLineups(data.starting_xis);
                 setLocalPlayers(data.players[data.details[0].home_team]);
                 setAwayPlayers(data.players[data.details[0].away_team]);
+                console.log("Match data:", data);
+                const allEvents = Object.values(data)
+                    .filter(value => Array.isArray(value))
+                    .flat()
+                    .filter(item => typeof item === "object" && item !== null && "timestamp" in item && "period" in item)
+                    .sort((a, b) => {
+                        // Convierte "timestamp" de string "hh:mm:ss.mmm" a milisegundos para comparar
+                        const toSeconds = (ts: string) => {
+                            const [h, m, s] = ts.split(":").map(Number);
+                            return h * 3600 + m * 60 + s;
+                        };
+                        return toSeconds(a.timestamp) - toSeconds(b.timestamp);
+                    })
+                    .sort((a, b) => {
+                        // ordena por period
+                        return a.period - b.period;
+                    })
+                setAllEvents(allEvents);
                 setLoading(false);
             })
             .catch((err) => {
@@ -91,7 +111,7 @@ const MatchPage = () => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h3>Entrenadores: {match.home_managers} - {match.away_managers}</h3>
             </div>
-            <FootballField matchId={Number(matchId)} homeTeam={match.home_team} awayTeam={match.away_team} />
+            <FootballField homeTeam={match.home_team} awayTeam={match.away_team} events={allEvents} />
             <h3>Alineaciones</h3>
             <div className="match-page__lineups">
                 <ListPlayer players={localPlayers} />
