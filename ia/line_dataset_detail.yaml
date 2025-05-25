@@ -1,6 +1,7 @@
-path: /home/dani/Desktop/futbol/dataset-seg
+path: /home/dani/Desktop/futbol/ia/dataset-detail
 train: images/train
 val: images/valid
+test: images/test
 
 
 names:
