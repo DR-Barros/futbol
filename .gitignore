@@ -2,6 +2,7 @@
 SoccerNet/
 dataset/
 dataset-det/
+dataset-detail/
 dataset-det2/
 runs/
 __pycache__/
