@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from torchvision import models, transforms
 from PIL import Image
+import cv2
+import numpy as np
 import json
 import os
 
@@ -64,3 +66,19 @@ class CameraClassifier:
             probabilities = torch.nn.functional.softmax(output, dim=1).squeeze().cpu().numpy()
         
         return dict(zip(self.class_names, probabilities))
+    
+    
+    def predict_frame(self, frame: np.ndarray) -> str:
+        """
+        Predict the camera type from a video frame.
+        :param frame: Video frame as a NumPy array.
+        :return: Predicted camera type as a string.
+        """
+        image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)).convert('RGB')
+        input_tensor = self.transform(image).unsqueeze(0).to(self.device)
+
+        with torch.no_grad():
+            output = self.model(input_tensor)
+            predicted_index = output.argmax(dim=1).item()
+        
+        return self.class_names[predicted_index]
