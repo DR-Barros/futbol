@@ -233,8 +233,83 @@ class FieldHomography:
                     "pos": (x1, y1, x2, y2),
                     "type": self.model_inclination.names[int(box.cls[0])],
                 })
-        results = self.model_line(frame, device=self.device)
-        return results
+        field_lines = []
+        central_circle = None
+        for result in self.model_line(frame, device=self.device):
+            boxes = result.boxes.xyxy.cpu().numpy()
+            for box in boxes:
+                cls_id = int(box.cls[0])
+                line_name = self.model_line.names[cls_id]
+                if line_name == "central circle":
+                    x1, y1, x2, y2 = box.xyxy[0].tolist()
+                    x1, y1, x2, y2 = map(int, (x1, y1, x2, y2))
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                    central_circle = [x1, y1, x2, y2]
+                elif line_name in [ 'Circle right','Circle left', "Goal right crossbar","Goal right post left","Goal right post right","Goal left post left","Goal left post left ","Goal left post left","Goal left post right","Goal left crossbar", 'unknown']:
+                    pass
+                else:
+                    x1, y1, x2, y2 = box.xyxy[0].tolist()
+                    x1, y1, x2, y2 = map(int, (x1, y1, x2, y2))
+                    # Buscar la inclinación_box con mayor área de intersección
+                    max_iou = 0
+                    best_inclinacion = None
+                    for inc_box in inclination_results:
+                        ix1, iy1, ix2, iy2 = inc_box["pos"]
+                        # calcular intersección
+                        inter_x1 = max(x1, ix1)
+                        inter_y1 = max(y1, iy1)
+                        inter_x2 = min(x2, ix2)
+                        inter_y2 = min(y2, iy2)
+                        inter_w = max(0, inter_x2 - inter_x1)
+                        inter_h = max(0, inter_y2 - inter_y1)
+                        inter_area = inter_w * inter_h
+                        area_line = (x2 - x1) * (y2 - y1)
+                        area_inc = (ix2 - ix1) * (iy2 - iy1)
+                        union_area = area_line + area_inc - inter_area
+                        iou = inter_area / union_area if union_area > 0 else 0
+                        if iou > max_iou:
+                            max_iou = iou
+                            best_inclinacion = inc_box
+                    # Si hay inclinación asociada, usar su sentido
+                    if best_inclinacion is not None:
+                        sentido = best_inclinacion["type"]
+                        if sentido == "r":
+                            cv2.line(frame, (x1, y2), (x2, y1), (0, 255, 0), 2)
+                            field_lines.append({"pos":(x1, y2, x2, y1),"type": line_name})
+                        else:
+                            cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                            field_lines.append({"pos":(x1, y1, x2, y2),"type": line_name})
+                    else:
+                        #ponemos un rectangulo en la posicion de la linea
+                        roi = frame[y1:y2, x1:x2]
+                        gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 2)
+                        blurred_roi = cv2.GaussianBlur(gray_roi, (5, 5), 0)
+                        # Aplicar Canny para detectar bordes
+                        edges = cv2.Canny(blurred_roi, 50, 150)
+                        # mostrar los bordes
+                        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=20, maxLineGap=10)
+                        if lines is not None:
+                            long_line = 0
+                            longest_line = None
+                            for line in lines:
+                                x1_l, y1_l, x2_l, y2_l = line[0]
+                                line_length = np.sqrt((x2_l - x1_l) ** 2 + (y2_l - y1_l) ** 2)
+                                if line_length > long_line:
+                                    long_line = line_length
+                                    longest_line = (x1_l, y1_l, x2_l, y2_l)
+                            if longest_line is not None:
+                                x1_line, y1_line, x2_line, y2_line = longest_line
+                                cv2.line(frame, (x1 + x1_line, y1 + y1_line), (x1 + x2_line, y1 + y2_line), (0, 255, 255), 2)
+                                angle_rad = np.arctan2((y2_line - y1_line), (x2_line - x1_line))
+                                angle_deg = np.degrees(angle_rad)
+                                if angle_deg > 0:
+                                    cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                                    field_lines.append({"pos":(x1, y1, x2, y2),"type": line_name})
+                                else:
+                                    cv2.line(frame, (x1, y2), (x2, y1), (0, 255, 0), 2)
+                                    field_lines.append({"pos":(x1, y2, x2, y1),"type": line_name})
+                        cv2.putText(frame, line_name, (x1, y1 + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)  
     def predict_inclination(self, frame):
         results = self.model_inclination(frame, device=self.device)
         return results
