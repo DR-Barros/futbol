@@ -6,8 +6,20 @@ import numpy as np
 
 
 class FieldHomography:
+    """
+    Clase para detectar líneas del campo de fútbol y jugadores, homologar posiciones y clasificar cámaras.
+    Esta clase utiliza modelos YOLO para detectar jugadores, líneas del campo y cámaras, y proporciona métodos para obtener la homografía del campo y las posiciones homologadas de los jugadores y el balón.
+    Atributos:
+        model_players_ball_path (str): Ruta al modelo YOLO para detectar jugadores y balón.
+        model_line_path (str): Ruta al modelo YOLO para detectar líneas del campo.
+        model_inclination_path (str): Ruta al modelo YOLO para detectar inclinaciones de líneas.
+        model_camera_path (str): Ruta al modelo de clasificación de cámaras.
+        field_width (float): Ancho del campo de fútbol en metros.
+        field_length (float): Largo del campo de fútbol en metros.
+    """
     def __init__(self, model_players_ball_path: str, model_line_path: str, model_inclination_path: str, model_camera_path: str, field_width: float = 68.0, field_length: float = 105.0):
         """
+        Inicializa la clase FieldHomography con los modelos y dimensiones del campo.
         """
         self.model_players_ball = YOLO(model_players_ball_path)
         self.model_line = YOLO(model_line_path)
@@ -316,10 +328,41 @@ class FieldHomography:
                         if verbose:
                             cv2.putText(frame, line_name, (x1, y1 + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
         return field_lines, central_circle  
-    def predict_inclination(self, frame):
-        results = self.model_inclination(frame, device=self.device)
-        return results
     def predict_camera(self, frame):
         results = self.model_camera.predict_frame(frame)
         return results
+    
+    def get_homolography(self, field_lines, central_circle):
+        """
+        Obtiene la homografía del campo a partir de las líneas detectadas y el círculo central.
+        Args:
+            field_lines (list): Lista de líneas del campo.
+            central_circle (list): Coordenadas del círculo central.
+        Returns:
+            np.ndarray: Matriz de homografía.
+        """
+        pass
         
+
+    def get_player_ball_homolography_positions(self, positions, H):
+        """
+        Obtiene las posiciones homologadas de los jugadores y el balón.
+        Args:
+            positions (list): Lista de posiciones de los jugadores y el balón.
+            H (np.ndarray): Matriz de homografía.
+        Returns:
+            list: Lista de posiciones homologadas.
+        """
+        if H is None:
+            raise ValueError("Homography matrix H is not defined.")
+        homologated_positions = []
+        for pos in positions:
+            try:
+                point = np.array([pos["pos"][0], pos["pos"][1], 1], dtype=np.float32)
+                transformed_point = np.dot(H, point)
+                transformed_point /= transformed_point[2]  # Normalizarq
+                homologated_positions.append({"pos":(transformed_point[0], transformed_point[1]),"type": pos["type"], "index": pos["index"]})
+            except Exception as e:
+                print(f"Error al aplicar homografía a la posición {pos['index']}: {e}")
+                continue
+        return homologated_positions
