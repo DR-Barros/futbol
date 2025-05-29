@@ -198,11 +198,41 @@ class FieldHomography:
         y = (A1 * C2 - A2 * C1) / D
         return x, y, NAME1, NAME2
     
-    def predict_players_ball(self, frame):
+    def predict_players_ball(self, frame, verbose=False):
         results = self.model_players_ball(frame, device=self.device)
-        return results
+        positions = []
+        index = 0
+        for result in results:
+            boxes = result.boxes.xyxy.cpu().numpy()
+            for box in boxes:
+                cls_id = int(box.cls[0])  
+                if self.model_players_ball.names[cls_id] not in ['person', 'sports ball']:
+                    continue
+                x1, y1, x2, y2 = box
+                if verbose:
+                    cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0) if self.model_players_ball.names[cls_id] == 'person' else (0, 255, 0), 2)
+                    cv2.putText(frame, self.model_players_ball.names[cls_id] + f" {index}", (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+                center_x = (x1 + x2) / 2
+                positions.append({
+                    "id": index,
+                    "class": self.model_players_ball.names[cls_id],
+                    "position": (center_x, max(y1, y2)),
+                })
+                index += 1
+        return positions
     
     def predict_lines(self, frame):
+        inclination_results = []
+        for result in self.model_inclination(frame, device=self.device):
+            boxes = result.boxes.xyxy.cpu().numpy()
+            for box in boxes:
+                x1, y1, x2, y2 = box
+                if self.model_inclination.names[int(box.cls[0])] == "unknown":
+                    continue
+                inclination_results.append({
+                    "pos": (x1, y1, x2, y2),
+                    "type": self.model_inclination.names[int(box.cls[0])],
+                })
         results = self.model_line(frame, device=self.device)
         return results
     def predict_inclination(self, frame):
