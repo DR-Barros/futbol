@@ -366,3 +366,30 @@ class FieldHomography:
                 print(f"Error al aplicar homografía a la posición {pos['index']}: {e}")
                 continue
         return homologated_positions
+    
+    def get_frame_homolography(self, frame, H):
+        """
+        Aplica la homografía a un frame.
+        Args:
+            frame (np.ndarray): Imagen del frame.
+            H (np.ndarray): Matriz de homografía.
+        Returns:
+            array: Imagen transformada.
+        """
+        if H is None:
+            raise ValueError("Homography matrix H is not defined.")
+        h_img, w_img = frame.shape[:2]
+        img_corners = np.array([
+            [0, 0, 1],
+            [w_img-1, 0, 1],
+            [w_img-1, h_img-1, 1],
+            [0, h_img-1, 1]
+        ], dtype=np.float32)
+        transformed_corners = np.dot(H, img_corners.T).T
+        transformed_corners /= transformed_corners[:, 2].reshape(-1, 1)
+        transformed_corners = transformed_corners[:, :2].astype(np.int32)
+        min_x = np.min(transformed_corners[:, 0])
+        min_y = np.min(transformed_corners[:, 1])
+        max_x = np.max(transformed_corners[:, 0])
+        max_y = np.max(transformed_corners[:, 1])
+        return [min_x, min_y, max_x, max_y]
