@@ -221,7 +221,7 @@ class FieldHomography:
                 index += 1
         return positions
     
-    def predict_lines(self, frame):
+    def predict_lines(self, frame, verbose=False):
         inclination_results = []
         for result in self.model_inclination(frame, device=self.device):
             boxes = result.boxes.xyxy.cpu().numpy()
@@ -243,7 +243,8 @@ class FieldHomography:
                 if line_name == "central circle":
                     x1, y1, x2, y2 = box.xyxy[0].tolist()
                     x1, y1, x2, y2 = map(int, (x1, y1, x2, y2))
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                    if verbose:
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
                     central_circle = [x1, y1, x2, y2]
                 elif line_name in [ 'Circle right','Circle left', "Goal right crossbar","Goal right post left","Goal right post right","Goal left post left","Goal left post left ","Goal left post left","Goal left post right","Goal left crossbar", 'unknown']:
                     pass
@@ -274,16 +275,19 @@ class FieldHomography:
                     if best_inclinacion is not None:
                         sentido = best_inclinacion["type"]
                         if sentido == "r":
-                            cv2.line(frame, (x1, y2), (x2, y1), (0, 255, 0), 2)
+                            if verbose:
+                                cv2.line(frame, (x1, y2), (x2, y1), (0, 255, 0), 2)
                             field_lines.append({"pos":(x1, y2, x2, y1),"type": line_name})
                         else:
-                            cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                            if verbose:
+                                cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
                             field_lines.append({"pos":(x1, y1, x2, y2),"type": line_name})
                     else:
                         #ponemos un rectangulo en la posicion de la linea
                         roi = frame[y1:y2, x1:x2]
                         gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 2)
+                        if verbose:
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 2)
                         blurred_roi = cv2.GaussianBlur(gray_roi, (5, 5), 0)
                         # Aplicar Canny para detectar bordes
                         edges = cv2.Canny(blurred_roi, 50, 150)
@@ -309,7 +313,9 @@ class FieldHomography:
                                 else:
                                     cv2.line(frame, (x1, y2), (x2, y1), (0, 255, 0), 2)
                                     field_lines.append({"pos":(x1, y2, x2, y1),"type": line_name})
-                        cv2.putText(frame, line_name, (x1, y1 + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)  
+                        if verbose:
+                            cv2.putText(frame, line_name, (x1, y1 + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
+        return field_lines, central_circle  
     def predict_inclination(self, frame):
         results = self.model_inclination(frame, device=self.device)
         return results
